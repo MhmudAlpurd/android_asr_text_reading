@@ -402,7 +402,7 @@ public final class StillImageActivity extends AppCompatActivity {
             imageProcessor.stop();
           }
           imageProcessor =
-              new TextRecognitionProcessor(this, new TextRecognizerOptions.Builder().build());
+              new TextRecognitionProcessor(this, new TextRecognizerOptions.Builder().build(), "Nothing");
 
 
     } catch (Exception e) {

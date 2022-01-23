@@ -83,6 +83,7 @@ public final class LivePreviewActivity extends AppCompatActivity
 
   private static final String TAG = "LivePreviewActivity";
   private static final int PERMISSION_REQUESTS = 1;
+  String isLabel_or_isCard ;
 
   private CameraSource cameraSource = null;
   private CameraSourcePreview preview;
@@ -104,6 +105,12 @@ public final class LivePreviewActivity extends AppCompatActivity
     if (graphicOverlay == null) {
       Log.d(TAG, "graphicOverlay is null");
     }
+
+    Bundle extras = getIntent().getExtras();
+    if (extras != null) {
+      isLabel_or_isCard = extras.getString("isLabel_or_isCard");
+    }
+    Log.d("isLabel_or_isCard", isLabel_or_isCard );
 
     Spinner spinner = findViewById(R.id.spinner);
     List<String> options = new ArrayList<>();
@@ -195,7 +202,7 @@ public final class LivePreviewActivity extends AppCompatActivity
         //case TEXT_RECOGNITION_LATIN:
           Log.i(TAG, "Using on-device Text recognition Processor for Latin.");
           cameraSource.setMachineLearningFrameProcessor(
-              new TextRecognitionProcessor(this, new TextRecognizerOptions.Builder().build()));
+              new TextRecognitionProcessor(this, new TextRecognizerOptions.Builder().build(), isLabel_or_isCard));
 
     } catch (RuntimeException e) {
       Log.e(TAG, "Can not create image processor: " + model, e);

@@ -33,7 +33,7 @@
         android:id="@+id/iv_mic"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:src="@drawable/microphone" />
+        android:src="@drawable/muted_mic" />
 
 </LinearLayout>
 

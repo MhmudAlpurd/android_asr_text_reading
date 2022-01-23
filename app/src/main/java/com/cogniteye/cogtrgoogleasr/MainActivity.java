@@ -1,6 +1,12 @@
 package com.cogniteye.cogtrgoogleasr;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -8,6 +14,7 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -15,12 +22,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import com.cogniteye.cogtrgoogleasr.commandRecogniton.COMMANDREC;
+import com.cogniteye.cogtrgoogleasr.tts.Speech;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int RecordAudioRequestCode = 1;
     private SpeechRecognizer speechRecognizer;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 1000L);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L);
-
 
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
@@ -105,7 +112,28 @@ public class MainActivity extends AppCompatActivity {
                 for (String s : data) {
                     System.out.println(APP_TAG + ":  " + s);
                 }
-                editText.setText(data.get(0));
+                String txtResult = data.get(0);
+                String disired_module = "Text Reading";
+                editText.setText(txtResult);
+                Log.v("Test01", "result:"+ txtResult);
+
+                String res =  COMMANDREC.find_madule_and_object(txtResult);
+                String whichModule = res.split("\\|")[0];
+                String isLabel_or_isCard = res.split("\\|")[1];
+
+               if (whichModule.equals(disired_module)){
+                    Speech.talk("Text Reading module is enabled!", getApplicationContext());
+                    try {
+                        Thread.sleep(3000);
+                        Intent i = new Intent(MainActivity.this, LivePreviewActivity.class);
+                        i.putExtra("isLabel_or_isCard",isLabel_or_isCard);
+                        startActivity(i);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                Log.v("Test01", "module:"+ res);
+
             }
 
             @Override
@@ -119,8 +147,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         micButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -128,13 +154,12 @@ public class MainActivity extends AppCompatActivity {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     System.out.println(APP_TAG + ":  ACTION_UP");
                     speechRecognizer.stopListening();
+                    Log.v("Test01", "stopListening");
                 }
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     System.out.println(APP_TAG + ":  ACTION_DOWN");
                     speechRecognizer.startListening(speechRecognizerIntent);
-                    //TODO: if user says "Hey buddy" go to Image captioning Intent.
-                    Intent intent = new Intent(MainActivity.this, LivePreviewActivity.class);
-                    startActivity(intent);
+                    Log.v("Test01", "startListening");
                 }
                 return false;
             }
@@ -204,7 +229,4 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         speechRecognizer.destroy();
     }
-
-
-
 }

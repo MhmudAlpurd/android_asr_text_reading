@@ -304,7 +304,7 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
     try {
           Log.i(TAG, "Using on-device Text recognition Processor for Latin.");
           imageProcessor =
-              new TextRecognitionProcessor(this, new TextRecognizerOptions.Builder().build());
+              new TextRecognitionProcessor(this, new TextRecognizerOptions.Builder().build(), "Nothing");
 
     } catch (Exception e) {
       Log.e(TAG, "Can not create image processor: " + selectedModel, e);

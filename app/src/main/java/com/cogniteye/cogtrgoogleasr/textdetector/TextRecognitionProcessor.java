@@ -22,6 +22,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.cogniteye.cogtrgoogleasr.titleRec.TitleRecognizer;
 import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.common.InputImage;
 import com.cogniteye.cogtrgoogleasr.GraphicOverlay;
@@ -34,6 +35,7 @@ import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.TextRecognizerOptionsInterface;
 
+import java.util.Arrays;
 import java.util.List;
 
 /** Processor for the text detector demo. */
@@ -52,19 +54,21 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
   String desc = "description_test";
   String txtArea = "area";
   String imgText = "text";
+  String card_or_label = "";
+
+  TitleRecognizer titleRecognizer = new TitleRecognizer();
 
 
 
 
 
   public TextRecognitionProcessor(
-      Context context, TextRecognizerOptionsInterface textRecognizerOptions) {
+      Context context, TextRecognizerOptionsInterface textRecognizerOptions, String isLabel_or_isCard) {
     super(context);
     shouldGroupRecognizedTextInBlocks = PreferenceUtils.shouldGroupRecognizedTextInBlocks(context);
     showLanguageTag = PreferenceUtils.showLanguageTag(context);
     textRecognizer = TextRecognition.getClient(textRecognizerOptions);
-
-
+    card_or_label = isLabel_or_isCard;
   }
 
   @Override
@@ -83,31 +87,43 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
   @Override
   protected void onSuccess(@NonNull Text text, @NonNull GraphicOverlay graphicOverlay) {
     Log.d(TAG, "On-device Text detection successful");
+
+
     logExtrasForTesting(text);
     graphicOverlay.add(
         new TextGraphic(graphicOverlay, text, shouldGroupRecognizedTextInBlocks, showLanguageTag));
   }
 
-  private static void logExtrasForTesting(Text text) {
+  private void logExtrasForTesting(Text text) {
     if (text != null) {
-      Log.v("gggttt", "block_size: " + text.getTextBlocks().size());
       Log.v(MANUAL_TESTING_LOG, "Detected text has : " + text.getTextBlocks().size() + " blocks");
+      Log.d("Text243", text.getText()); //text line by line!
+
       for (int i = 0; i < text.getTextBlocks().size(); ++i) {
         List<Line> lines = text.getTextBlocks().get(i).getLines();
-        Log.v("gggttt", "text: " + text.getText());
+        if(card_or_label.equals("Label")){
+          String title = titleRecognizer.recognizeTitleForLabel(text, lines);
+          Log.d("biggestBB", "Title_label: " + title);
+        }else if (card_or_label.equals("Card")){
+          String title = titleRecognizer.recognizeTitleForCard(text, lines);
+          Log.d("biggestBB", "Title_card: " + title);
+        }else {
+          String title = titleRecognizer.recognizeTitleForLabel(text, lines);
+          Log.d("biggestBB", "Title_else: " + title);
+        }
+
 
         Log.v(
             MANUAL_TESTING_LOG,
             String.format("Detected text block %d has %d lines", i, lines.size()));
         for (int j = 0; j < lines.size(); ++j) {
           List<Element> elements = lines.get(j).getElements();
-          Log.v("FirstTest", "elements: " + elements);
-
           Log.v(
               MANUAL_TESTING_LOG,
               String.format("Detected text line %d has %d elements", j, elements.size()));
           for (int k = 0; k < elements.size(); ++k) {
             Element element = elements.get(k);
+            Log.v("Test123", "Corner Points: " + Arrays.toString(element.getCornerPoints()));
             Log.v(
                 MANUAL_TESTING_LOG,
                 String.format("Detected text element %d says: %s", k, element.getText()));
