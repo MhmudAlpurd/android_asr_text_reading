@@ -34,12 +34,20 @@ public class MainActivity extends AppCompatActivity {
     public static final String APP_TAG = "speech-to-text";
     private static final int RecordAudioRequestCode = 1;
     private SpeechRecognizer speechRecognizer;
+    String message_from_TextRecognitionProcessor = null;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //from TextRecognitionProcessor.java
+        message_from_TextRecognitionProcessor = getIntent().getStringExtra("leaving_message");
+        if (message_from_TextRecognitionProcessor != null && message_from_TextRecognitionProcessor !=""){
+            Speech.talk(message_from_TextRecognitionProcessor, getApplicationContext());
+        }
+
 
         System.out.println(APP_TAG + ": SpeechRecognizer.isRecognitionAvailable: " + SpeechRecognizer.isRecognitionAvailable(this));
 
@@ -51,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         TextView editText = findViewById(R.id.tw_recognizedCommand_info);
         ImageView micButton = findViewById(R.id.iv_mic);
+        TextView tv_ModuleStatus = findViewById(R.id.tw_moduleStatus_info);
+
 
         final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);  // number of maximum results
@@ -120,17 +130,13 @@ public class MainActivity extends AppCompatActivity {
                 String res =  COMMANDREC.find_madule_and_object(txtResult);
                 String whichModule = res.split("\\|")[0];
                 String isLabel_or_isCard = res.split("\\|")[1];
+                tv_ModuleStatus.setText(whichModule);
 
                if (whichModule.equals(disired_module)){
                     Speech.talk("Text Reading module is enabled!", getApplicationContext());
-                    try {
-                        Thread.sleep(3000);
-                        Intent i = new Intent(MainActivity.this, LivePreviewActivity.class);
-                        i.putExtra("isLabel_or_isCard",isLabel_or_isCard);
-                        startActivity(i);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
+                    Intent i = new Intent(MainActivity.this, LivePreviewActivity.class);
+                    i.putExtra("isLabel_or_isCard",isLabel_or_isCard);
+                    startActivity(i);
                 }
                 Log.v("Test01", "module:"+ res);
 

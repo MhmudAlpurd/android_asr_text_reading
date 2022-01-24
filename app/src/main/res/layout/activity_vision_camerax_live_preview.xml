@@ -31,6 +31,7 @@
       app:layout_constraintTop_toTopOf="@id/preview_view" />
 
   <LinearLayout
+      android:visibility="gone"
       android:id="@id/control"
       android:layout_width="match_parent"
       android:layout_height="60dp"

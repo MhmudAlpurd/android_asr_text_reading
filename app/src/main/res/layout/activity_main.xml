@@ -6,19 +6,44 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 <LinearLayout
+    android:layout_margin="20dp"
+    android:orientation="vertical"
     android:id="@+id/ll_say"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
-        android:layout_margin="20dp"
         android:textSize="20dp"
-        android:id="@+id/tw_sayRead"
+        android:id="@+id/tw_steps"
         android:gravity="center"
         android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Say: Read the label / card !"/>
+        android:text="Steps:"/>
+    <TextView
+        android:id="@+id/tw_pressMic1"
+        android:gravity="left"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1. Press Mic"/>
+    <TextView
+        android:id="@+id/tw_sayRead"
+        android:gravity="left"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2. Say; Hey Buddy"/>
+    <TextView
+        android:id="@+id/tw_pressMic2"
+        android:gravity="left"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="3. Press Mic"/>
+    <TextView
+        android:id="@+id/tw_ReadtheLabel"
+        android:gravity="left"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="4. Say; Read the Label/Card"/>
 
 </LinearLayout>
 
@@ -68,6 +93,7 @@
         android:id="@+id/tw_moduleStatus"/>
 
     <TextView
+        android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tw_moduleStatus_info"/>

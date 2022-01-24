@@ -96,6 +96,8 @@ public final class LivePreviewActivity extends AppCompatActivity
     Log.d(TAG, "onCreate");
 
     setContentView(R.layout.activity_vision_live_preview);
+    Log.d("TestOnCreate", "onCreate");
+
 
     preview = findViewById(R.id.preview_view);
     if (preview == null) {
@@ -114,7 +116,7 @@ public final class LivePreviewActivity extends AppCompatActivity
 
     Spinner spinner = findViewById(R.id.spinner);
     List<String> options = new ArrayList<>();
-    options.add(OBJECT_DETECTION);
+/*    options.add(OBJECT_DETECTION);
     options.add(OBJECT_DETECTION_CUSTOM);
     options.add(CUSTOM_AUTOML_OBJECT_DETECTION);
     options.add(FACE_DETECTION);
@@ -123,12 +125,12 @@ public final class LivePreviewActivity extends AppCompatActivity
     options.add(IMAGE_LABELING_CUSTOM);
     options.add(CUSTOM_AUTOML_LABELING);
     options.add(POSE_DETECTION);
-    options.add(SELFIE_SEGMENTATION);
+    options.add(SELFIE_SEGMENTATION);*/
     options.add(TEXT_RECOGNITION_LATIN);
-    options.add(TEXT_RECOGNITION_CHINESE);
+    /*options.add(TEXT_RECOGNITION_CHINESE);
     options.add(TEXT_RECOGNITION_DEVANAGARI);
     options.add(TEXT_RECOGNITION_JAPANESE);
-    options.add(TEXT_RECOGNITION_KOREAN);
+    options.add(TEXT_RECOGNITION_KOREAN);*/
 
     // Creating adapter for spinner
     ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, R.layout.spinner_style, options);
@@ -163,6 +165,7 @@ public final class LivePreviewActivity extends AppCompatActivity
     // parent.getItemAtPosition(pos)
     selectedModel = parent.getItemAtPosition(pos).toString();
     Log.d(TAG, "Selected model: " + selectedModel);
+    Log.d("TestOnCreate", "onItemSelected");
     preview.stop();
     if (allPermissionsGranted()) {
       createCameraSource(selectedModel);
@@ -179,6 +182,8 @@ public final class LivePreviewActivity extends AppCompatActivity
 
   @Override
   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+    Log.d("TestOnCreate", "onCheckedChanged");
+
     Log.d(TAG, "Set facing");
     if (cameraSource != null) {
       if (isChecked) {
@@ -192,6 +197,8 @@ public final class LivePreviewActivity extends AppCompatActivity
   }
 
   private void createCameraSource(String model) {
+    Log.d("TestOnCreate", "createCameraSource");
+
     // If there's no existing cameraSource, create one.
     if (cameraSource == null) {
       cameraSource = new CameraSource(this, graphicOverlay);
@@ -220,6 +227,9 @@ public final class LivePreviewActivity extends AppCompatActivity
    * again when the camera source is created.
    */
   private void startCameraSource() {
+    Log.d("TestOnCreate", "startCameraSource");
+
+
     if (cameraSource != null) {
       try {
         if (preview == null) {
@@ -240,6 +250,8 @@ public final class LivePreviewActivity extends AppCompatActivity
   @Override
   public void onResume() {
     super.onResume();
+    Log.d("TestOnCreate", "onResume");
+
     Log.d(TAG, "onResume");
     createCameraSource(selectedModel);
     startCameraSource();

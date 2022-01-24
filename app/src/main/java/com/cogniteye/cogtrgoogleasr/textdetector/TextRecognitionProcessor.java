@@ -17,12 +17,16 @@
 package com.cogniteye.cogtrgoogleasr.textdetector;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.cogniteye.cogtrgoogleasr.MainActivity;
+import com.cogniteye.cogtrgoogleasr.commandRecogniton.COMMANDREC;
 import com.cogniteye.cogtrgoogleasr.titleRec.TitleRecognizer;
+import com.cogniteye.cogtrgoogleasr.tts.Speech;
 import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.common.InputImage;
 import com.cogniteye.cogtrgoogleasr.GraphicOverlay;
@@ -37,6 +41,7 @@ import com.google.mlkit.vision.text.TextRecognizerOptionsInterface;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /** Processor for the text detector demo. */
 public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
@@ -50,21 +55,22 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
   String filename = "";
   String filepath = "";
   String fileContent = "";
-  String title = "string_test";
+  String title = null;
   String desc = "description_test";
   String txtArea = "area";
   String imgText = "text";
   String card_or_label = "";
+  Context context;
 
   TitleRecognizer titleRecognizer = new TitleRecognizer();
-
-
-
+  int numberOfFrame = 0;
+  int numberOfSpeech = 0;
 
 
   public TextRecognitionProcessor(
       Context context, TextRecognizerOptionsInterface textRecognizerOptions, String isLabel_or_isCard) {
     super(context);
+    this.context = context;
     shouldGroupRecognizedTextInBlocks = PreferenceUtils.shouldGroupRecognizedTextInBlocks(context);
     showLanguageTag = PreferenceUtils.showLanguageTag(context);
     textRecognizer = TextRecognition.getClient(textRecognizerOptions);
@@ -95,24 +101,36 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
   }
 
   private void logExtrasForTesting(Text text) {
-    if (text != null) {
+    numberOfFrame += 1 ;
+    if (text != null && numberOfFrame % 40 == 0) {
       Log.v(MANUAL_TESTING_LOG, "Detected text has : " + text.getTextBlocks().size() + " blocks");
       Log.d("Text243", text.getText()); //text line by line!
 
       for (int i = 0; i < text.getTextBlocks().size(); ++i) {
         List<Line> lines = text.getTextBlocks().get(i).getLines();
         if(card_or_label.equals("Label")){
-          String title = titleRecognizer.recognizeTitleForLabel(text, lines);
+          title = titleRecognizer.recognizeTitleForLabel(text, lines);
           Log.d("biggestBB", "Title_label: " + title);
         }else if (card_or_label.equals("Card")){
-          String title = titleRecognizer.recognizeTitleForCard(text, lines);
+          title = titleRecognizer.recognizeTitleForCard(text, lines);
           Log.d("biggestBB", "Title_card: " + title);
         }else {
-          String title = titleRecognizer.recognizeTitleForLabel(text, lines);
+          title = titleRecognizer.recognizeTitleForLabel(text, lines);
           Log.d("biggestBB", "Title_else: " + title);
         }
+        //Log.d("titletalk", "before: " + title);
+        if(title != null && title != ""){
+          numberOfSpeech += 1 ;
+          Log.d("titletalk", "after: " + title);
+          Speech.talk(title, context);
 
+          if(numberOfSpeech == 40){
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.putExtra("leaving_message", "Text reading module disabled");
+            context.startActivity(intent);
+          }
 
+        }
         Log.v(
             MANUAL_TESTING_LOG,
             String.format("Detected text block %d has %d lines", i, lines.size()));
@@ -152,6 +170,14 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
   @Override
   protected void onFailure(@NonNull Exception e) {
     Log.w(TAG, "Text detection failed." + e);
+  }
+
+  public void delay(int milliSecondsToSleep){
+    try {
+      TimeUnit.MILLISECONDS.sleep(milliSecondsToSleep);
+    } catch (InterruptedException ie) {
+      Thread.currentThread().interrupt();
+    }
   }
 
 

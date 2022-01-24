@@ -31,6 +31,7 @@
         app:layout_constraintTop_toTopOf="@id/preview_view" />
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@id/control"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -39,6 +40,7 @@
         android:orientation="horizontal">
 
         <ToggleButton
+            android:visibility="gone"
             android:id="@+id/facing_switch"
             android:layout_width="48dp"
             android:layout_height="48dp"

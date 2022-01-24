@@ -35,6 +35,7 @@
         android:layout_gravity="top"/>
 
     <ToggleButton
+        android:visibility="gone"
         android:id="@+id/facing_switch"
         android:layout_width="48dp"
         android:layout_height="48dp"

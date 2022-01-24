@@ -48,11 +48,6 @@ public class TitleRecognizer {
                 }
 
 
-
-
-
-
-
             }
 }
         Log.d("TESTMAP", map.toString());
