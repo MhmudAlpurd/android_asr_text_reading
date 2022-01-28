@@ -57,15 +57,6 @@ import com.cogniteye.cogtrgoogleasr.CameraXViewModel;
 import com.cogniteye.cogtrgoogleasr.textdetector.TextRecognitionProcessor;
 import com.cogniteye.cogtrgoogleasr.preference.PreferenceUtils;
 import com.cogniteye.cogtrgoogleasr.preference.SettingsActivity;
-import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions;
-import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
-import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
-import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions;
-import com.google.mlkit.vision.pose.PoseDetectorOptionsBase;
-import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions;
-import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions;
-import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions;
-import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
 import java.util.ArrayList;

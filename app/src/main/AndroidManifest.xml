@@ -32,6 +32,9 @@
         <activity android:name=".preference.SettingsActivity"/>
         <activity android:name=".CameraXSourceDemoActivity"/>
         <activity android:name=".StillImageActivity"/>
+        <service android:name=".asr.ASR_Service"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

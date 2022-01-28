@@ -56,8 +56,20 @@ public class Speech extends AppCompatActivity {
 
 
 
+
     }
 
 
+
+
+    public static void stopTalking(Context mContext){
+        tts = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                    tts.stop();
+                    tts.shutdown();
+            }
+        });
+    }
 
 }

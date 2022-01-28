@@ -5,20 +5,27 @@ import android.util.Log;
 
 import com.google.mlkit.vision.text.Text;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class TitleRecognizer {
     Map<Integer, String> map = new HashMap<>();
+    int cardFrameIteration = 0 ;
+
+    String[] card_keywords={"Java","Python","PHP","C++"};
+    List<String> card_keywords_list = new ArrayList<String>();
 
     public String recognizeTitleForLabel(Text txt, List<Text.Line> lines){
         //return: text of biggest bounding box for label, and ... for card!
         String textOfBiggestBox = null;
         map.clear();
-
 
         for (int i=0; i<txt.getTextBlocks().size(); i++){
             for(int j=0; j<txt.getTextBlocks().get(i).getLines().size(); j++){ //lines of one block!
@@ -57,9 +64,20 @@ public class TitleRecognizer {
     }
 
 
-    public String recognizeTitleForCard(Text txt, List<Text.Line> lines){
-        String text = txt.getText().replaceAll("\\d"," ");
-        return text;
+    public String recognizeTitleForCard(Text txt){
+        cardFrameIteration +=1;
+        int wordNumberIteration = 0;
+        StringBuilder resText = null;
+        String cardReturned = wordExistance(txt);
+        if(cardReturned == null){
+            String text = txt.getText().replaceAll("\\d", " ");
+            String res = spliteTXT(text, 10);
+            return res;
+        }else {
+            Log.v("testt841", "cardreturned: " + cardReturned);
+
+            return cardReturned;
+        }
     }
 
 
@@ -81,4 +99,69 @@ public class TitleRecognizer {
         return map.get(maxKey);
 
     }
+
+    public String isExist(Text txt) {
+        String existedKeyword = null;
+        boolean isContains = false;
+
+        for (int i = 0; i < txt.getTextBlocks().size(); i++) {
+            for (int j = 0; j < txt.getTextBlocks().get(i).getLines().size(); j++) { //lines of one block!
+                for (int k = 0; k < txt.getTextBlocks().get(i).getLines().get(j).getElements().size(); k++){
+                    String kElement = txt.getTextBlocks().get(i).getLines().get(j).getElements().get(k).getText();
+                    isContains = Arrays.stream(card_keywords).anyMatch(kElement.toLowerCase().trim() :: equals);
+                    Log.d("cardRet123", "word: " + kElement);
+                    if (isContains){
+                        existedKeyword = kElement.toLowerCase().trim();
+                        Log.d("cardRet123", "isContains: " + "True");
+                        break;
+                    }
+                    Log.d("cardRet123", "isContains: " + "False");
+
+                }
+            }
+        }
+        return existedKeyword;
+    }
+
+
+    public String wordExistance(Text txt) {
+        String existedKeyword = null;
+        card_keywords_list.add("bank");
+        card_keywords_list.add("library");
+        card_keywords_list.add("identification");
+
+        for(String txtSearch : card_keywords_list){
+            Log.d("contain123", "txtSearch: " + txtSearch);
+            Pattern pattern = Pattern.compile(txtSearch, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(txt.getText());
+            Log.d("contain123", "txt: " + txt.getText());
+            boolean matchFound = matcher.find();
+            if(matchFound) {
+                existedKeyword = txtSearch;
+                break;
+            }
+        }
+
+        Log.d("contain123", "exitword: " + existedKeyword);
+        return existedKeyword;
+
+    }
+
+
+    private String spliteTXT(String s, int num){
+
+        String[] splited = s.split(" ", num+1);
+        List<String> list = new ArrayList<String>(Arrays.asList(splited));
+        list.remove(num);
+
+        String result = list.stream()
+                .map(n -> String.valueOf(n))
+                .collect(Collectors.joining(" ", "", ""));
+
+        return result;
+    }
+
+
+
+
 }

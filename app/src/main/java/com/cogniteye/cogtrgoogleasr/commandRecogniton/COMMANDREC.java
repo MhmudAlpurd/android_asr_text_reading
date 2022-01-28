@@ -38,7 +38,7 @@ public class COMMANDREC {
         String[] trigger_word_main_keywords ={"hi", "hey"};
         List<String> trigger_word_main_keywords_lst = Arrays.asList(trigger_word_main_keywords);
 
-        String[] text_reading_main_keywords ={"read", "written", "rich", "red", "reach", "write"};
+        String[] text_reading_main_keywords ={"read", "written","with", "rich", "red", "reach", "write"};
         List<String> text_reading_main_keyworks_lst = Arrays.asList(text_reading_main_keywords);
 
         String[] finding_object_main_keyworkds ={"where", "what", "there", "here", "wear", "burn", "wear"};
@@ -56,7 +56,7 @@ public class COMMANDREC {
         String[] text_reading_secondary_keywords = {"cash", "call", "label", "catch", "card", "court", "labor", "labour"};
         List<String> text_reading_secondary_keywords_lst = Arrays.asList(text_reading_secondary_keywords);
 
-        String[] finding_object_secondary_keyworkds = {"is", "my", "the"};
+        String[] finding_object_secondary_keyworkds = {"is", "my", "the", "day"};
         List<String> finding_object_secondary_keyworkds_lst = Arrays.asList(finding_object_secondary_keyworkds);
 
         String[] scene_description_secondary_keywords = {"it", "me"};
@@ -65,7 +65,7 @@ public class COMMANDREC {
         String[] text_reading_label = {"label", "labor", "labour"};
         List<String> text_reading_label_lst = Arrays.asList(text_reading_label);
 
-        String[] text_reading_card = {"cash", "call", "catch", "card", "court"};
+        String[] text_reading_card = {"cash", "call", "catch", "card", "court", "cards"};
         List<String> text_reading_label_card = Arrays.asList(text_reading_card);
 
 
@@ -234,11 +234,14 @@ public class COMMANDREC {
             if(i.contains(word)){
                 Found_MADULE = true;
                 Selected_Madule_index = MAIN_LST_INDX ;
+                break;
+            }else {
+                Selected_Madule_index = -1;
             }
         }
-        if (Found_MADULE == false){
+   /*     if (Found_MADULE == false){
             Selected_Madule_index = -1;
-        }
+        }*/
 
         return (Selected_Madule_index);
     }

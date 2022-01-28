@@ -65,6 +65,7 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
   TitleRecognizer titleRecognizer = new TitleRecognizer();
   int numberOfFrame = 0;
   int numberOfSpeech = 0;
+  int numberOfnullFrame = 0;
 
 
   public TextRecognitionProcessor(
@@ -102,6 +103,7 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
 
   private void logExtrasForTesting(Text text) {
     numberOfFrame += 1 ;
+
     if (text != null && numberOfFrame % 40 == 0) {
       Log.v(MANUAL_TESTING_LOG, "Detected text has : " + text.getTextBlocks().size() + " blocks");
       Log.d("Text243", text.getText()); //text line by line!
@@ -112,7 +114,7 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
           title = titleRecognizer.recognizeTitleForLabel(text, lines);
           Log.d("biggestBB", "Title_label: " + title);
         }else if (card_or_label.equals("Card")){
-          title = titleRecognizer.recognizeTitleForCard(text, lines);
+          title = titleRecognizer.recognizeTitleForCard(text);
           Log.d("biggestBB", "Title_card: " + title);
         }else {
           title = titleRecognizer.recognizeTitleForLabel(text, lines);
@@ -121,10 +123,12 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
         //Log.d("titletalk", "before: " + title);
         if(title != null && title != ""){
           numberOfSpeech += 1 ;
+          numberOfnullFrame = 0;
           Log.d("titletalk", "after: " + title);
           Speech.talk(title, context);
 
           if(numberOfSpeech == 40){
+            Speech.stopTalking(context);
             Intent intent = new Intent(context, MainActivity.class);
             intent.putExtra("leaving_message", "Text reading module disabled");
             context.startActivity(intent);
@@ -163,6 +167,28 @@ public class TextRecognitionProcessor extends VisionProcessorBase<Text> {
             }
           }
         }
+      }
+    }else {
+      numberOfnullFrame += 1;
+      //agar bad az 100 frame hich texti kashf nakard.bargard be warning bedeh, age 400 null boud bargard mainactivity.
+      switch (numberOfnullFrame){
+        case 100:
+        case 200:
+        case 300:
+          Speech.talk("There is no card in front of the camera.", context);
+          break;
+        case 400:
+          Speech.stopTalking(context);
+          Intent intent = new Intent(context, MainActivity.class);
+          intent.putExtra("leaving_message", "Text reading module disabled");
+          context.startActivity(intent);
+
+        default:
+          Log.v("default", "defalut");
+
+
+
+
       }
     }
   }

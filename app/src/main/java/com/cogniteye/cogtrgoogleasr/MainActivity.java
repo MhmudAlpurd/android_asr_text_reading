@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 String isLabel_or_isCard = res.split("\\|")[1];
                 tv_ModuleStatus.setText(whichModule);
 
-               if (whichModule.equals(disired_module)){
+                if (whichModule.equals(disired_module)){
                     Speech.talk("Text Reading module is enabled!", getApplicationContext());
                     Intent i = new Intent(MainActivity.this, LivePreviewActivity.class);
                     i.putExtra("isLabel_or_isCard",isLabel_or_isCard);
